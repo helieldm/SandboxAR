@@ -103,7 +103,6 @@ public class QRCodeManager : MonoBehaviour
             if (result != null && result.Text != "")
             { //If QRCode found inside the frame
                 Debug.Log("QR code not null?");
-                canvas.DisplayPopup();
                 string QRContents = result.Text;
                 // Get the resultsPoints of each qr code contain the following points in the following order: index 0: bottomLeft index 1: topLeft index 2: topRight
                 //Note this depends on the oreintation of the QRCode. The below part is mainly finding the mid of the QRCode using result points and making a raycast hit from that pose.
@@ -116,8 +115,13 @@ public class QRCodeManager : MonoBehaviour
                 Vector2 pos3 = new Vector2((float)c.X, (float)c.Y);
                 Vector2 pos4 = new Vector2(((float)b.X - (float)a.X) / 2.0f, ((float)c.Y - (float)a.Y) / 2.0f);
                 List<ARRaycastHit> aRRaycastHits = new List<ARRaycastHit>();
+                Debug.Log(pos4);
+                canvas.DisplayPopup(pos1);
+
+                bool hitTrackable = arRaycastManager.Raycast(pos4, aRRaycastHits, TrackableType.AllTypes);
+
                 //Make a raycast hit to get the pose of the QRCode detected to place an object around it.
-                if (arRaycastManager.Raycast(new Vector2(pos4.x, pos4.y), aRRaycastHits, TrackableType.FeaturePoint) && aRRaycastHits.Count > 0)
+                if (aRRaycastHits.Count > 0)
                 {
                     Debug.Log("Raycast hit!");
 
@@ -141,6 +145,7 @@ public class QRCodeManager : MonoBehaviour
             }
             else
             {
+                canvas.ClearPopup();
                 onlyOnce = false;  //QRCode not found in the frame. Continue processing next frame for QRCode
             }
         }

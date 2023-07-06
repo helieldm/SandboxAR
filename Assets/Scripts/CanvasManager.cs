@@ -5,9 +5,18 @@ using UnityEngine;
 
 public class CanvasManager : MonoBehaviour
 {
+    public GameObject canvasImage;
     public GameObject text;
-    public void DisplayPopup()
+    private GameObject text_instance;
+    public void DisplayPopup(Vector2 imgPos)
     {
-        Instantiate(text, transform);
+        canvasImage.SetActive(true);
+        canvasImage.transform.localPosition = imgPos;
+        text_instance = text_instance ? text_instance : Instantiate(text, transform);
+    }
+    public void ClearPopup()
+    {
+        canvasImage.SetActive(false);
+        if (text_instance != null) Destroy(text_instance);
     }
 }
